@@ -454,7 +454,7 @@ button:focus-visible,
 .ticker-track{
   display: flex;
   width: max-content;
-  animation: ticker-scroll 32s linear infinite;
+  animation: ticker-scroll var(--tick-duration, 32s) linear infinite;
 }
 @media (prefers-reduced-motion: reduce){
   .ticker-track{ animation: none; }
@@ -470,6 +470,7 @@ button:focus-visible,
   display: flex;
   align-items: center;
   gap: 1.4rem;
+  flex: none;
 }
 .ticker-track span em{
   font-style: normal;
@@ -477,7 +478,7 @@ button:focus-visible,
 }
 @keyframes ticker-scroll{
   from{ transform: translateX(0); }
-  to{ transform: translateX(-50%); }
+  to{ transform: translateX(var(--tick-shift, -50%)); }
 }
 
 /* ===================== SECTION HEADERS ===================== */

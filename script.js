@@ -1,6 +1,28 @@
 (function () {
   "use strict";
 
+  /* ---------- ticker: clone content so it never runs dry on ultrawide screens ---------- */
+  (function setupTicker() {
+    var track = document.querySelector(".ticker-track");
+    if (!track) return;
+    var firstSet = track.children[0];
+    if (!firstSet) return;
+    var setWidth = firstSet.getBoundingClientRect().width;
+    if (!setWidth) return;
+
+    // fill at least 2x the viewport width so the -1 set-width loop always has content
+    var targetWidth = window.innerWidth * 2;
+    var guard = 0;
+    while (track.scrollWidth < targetWidth + setWidth && guard < 40) {
+      track.appendChild(firstSet.cloneNode(true));
+      guard++;
+    }
+
+    var pxPerSecond = 55;
+    track.style.setProperty("--tick-shift", "-" + setWidth + "px");
+    track.style.setProperty("--tick-duration", (setWidth / pxPerSecond).toFixed(1) + "s");
+  })();
+
   /* ---------- mobile nav ---------- */
   var toggle = document.querySelector(".nav-toggle");
   var panel = document.getElementById("mobilePanel");
