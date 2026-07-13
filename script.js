@@ -137,4 +137,72 @@
     window.addEventListener("resize", updateParallax);
   }
 
+  /* ---------- hero scroll parallax ---------- */
+  var heroBg = document.querySelector(".hero-bg");
+  var heroFull = document.querySelector(".hero-full");
+  if (!reduceMotion && heroBg && heroFull) {
+    var heroTicking = false;
+    var updateHeroParallax = function () {
+      var rect = heroFull.getBoundingClientRect();
+      if (rect.bottom > 0) {
+        var shift = Math.max(-60, Math.min(60, rect.top * -0.12));
+        heroBg.style.setProperty("--scroll-py", shift.toFixed(1) + "px");
+      }
+      heroTicking = false;
+    };
+    updateHeroParallax();
+    window.addEventListener("scroll", function () {
+      if (!heroTicking) {
+        window.requestAnimationFrame(updateHeroParallax);
+        heroTicking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ---------- hero cursor spotlight ---------- */
+  var heroSpotlight = document.querySelector(".hero-spotlight");
+  if (!reduceMotion && heroSpotlight && heroFull && window.matchMedia("(hover: hover)").matches) {
+    var spotTicking = false;
+    var lastMx = 50, lastMy = 40;
+    heroFull.addEventListener("mousemove", function (e) {
+      var rect = heroFull.getBoundingClientRect();
+      lastMx = ((e.clientX - rect.left) / rect.width) * 100;
+      lastMy = ((e.clientY - rect.top) / rect.height) * 100;
+      if (!spotTicking) {
+        window.requestAnimationFrame(function () {
+          heroSpotlight.style.setProperty("--mx", lastMx.toFixed(1) + "%");
+          heroSpotlight.style.setProperty("--my", lastMy.toFixed(1) + "%");
+          spotTicking = false;
+        });
+        spotTicking = true;
+      }
+    });
+  }
+
+  /* ---------- gallery card cursor tilt ---------- */
+  if (!reduceMotion && window.matchMedia("(hover: hover)").matches) {
+    galleryItems.forEach(function (item) {
+      var ticking2 = false, rx = 0, ry = 0;
+      item.addEventListener("mousemove", function (e) {
+        var rect = item.getBoundingClientRect();
+        var px = (e.clientX - rect.left) / rect.width - 0.5;
+        var py = (e.clientY - rect.top) / rect.height - 0.5;
+        ry = px * 10;
+        rx = py * -10;
+        if (!ticking2) {
+          window.requestAnimationFrame(function () {
+            item.style.setProperty("--rx", rx.toFixed(2) + "deg");
+            item.style.setProperty("--ry", ry.toFixed(2) + "deg");
+            ticking2 = false;
+          });
+          ticking2 = true;
+        }
+      });
+      item.addEventListener("mouseleave", function () {
+        item.style.setProperty("--rx", "0deg");
+        item.style.setProperty("--ry", "0deg");
+      });
+    });
+  }
+
 })();
