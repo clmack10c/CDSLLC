@@ -7,9 +7,11 @@
 
 :root{
   /* --- palette --- */
-  --bg-void:      #090b0e;
-  --bg-surface:   #101419;
-  --bg-surface-2: #171c22;
+  /* Blueprint canvas: this is the site-wide base, matched to the E92 field. */
+  --bg-void:      #06080b;
+  /* One uninterrupted graphite-black field behind the portfolio. */
+  --bg-surface:   #06080b;
+  --bg-surface-2: #06080b;
   --line:         #28313a;
   --line-soft:    rgba(212,224,237,0.10);
   --ink:          #eef4f8;
@@ -112,7 +114,7 @@ button:focus-visible,
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(11,11,12,0.86);
+  background: rgba(6,8,11,0.94);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -483,8 +485,20 @@ button:focus-visible,
 
 /* ===================== SECTION HEADERS ===================== */
 .section{
+  position: relative;
   padding: 5rem 0;
-  border-bottom: 1px solid var(--line);
+}
+/* A recessed scan-line gives sections a boundary without boxing the page in. */
+.section::after{
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(72rem, calc(100% - (var(--edge) * 2)));
+  height: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(155,199,243,0.06) 16%, rgba(155,199,243,0.24) 50%, rgba(155,199,243,0.06) 84%, transparent 100%);
 }
 
 /* Technical-sheet motif: the JDM drawing is atmosphere, never a filter on the work. */
@@ -492,7 +506,7 @@ button:focus-visible,
   position: relative;
   isolation: isolate;
   overflow: clip;
-  background: linear-gradient(180deg, var(--bg-void) 0%, #0c1015 100%);
+  background: var(--bg-void);
 }
 .work-section > .wrap{ position: relative; z-index: 1; }
 .work-blueprint{
@@ -517,32 +531,131 @@ button:focus-visible,
   .work-blueprint{ width: 48rem; right: -23rem; top: 5.5rem; opacity: .11; }
 }
 
-.process-section{
+.blueprint-runway{
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
+  overflow: clip;
+  background: #06080b;
 }
-.process-section > .wrap{
+.blueprint-runway > .section{
   position: relative;
   z-index: 1;
 }
 .process-bg{
   position: absolute;
-  inset: 0;
+  display: block;
   z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1072 / 1536;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0.61;
+  /* Fade the actual image alpha outward, not only its color. This prevents the
+     portrait asset from ever reading as a rectangular panel on ultrawide screens. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
 }
 .process-bg img{
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 65% 44%;
-  opacity: 0.38;
-  filter: contrast(1.08) brightness(0.78);
+  object-fit: fill;
 }
 .process-bg::after{
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, var(--bg-void) 0%, rgba(9,11,14,0.88) 36%, rgba(9,11,14,0.62) 67%, var(--bg-void) 100%);
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(6, 8, 11, 0.24), rgba(6, 8, 11, 0.24)),
+    linear-gradient(180deg, rgba(6, 8, 11, 0.96) 0%, rgba(6, 8, 11, 0.42) 16%, rgba(6, 8, 11, 0.10) 31%, rgba(6, 8, 11, 0.10) 68%, rgba(6, 8, 11, 0.48) 84%, rgba(6, 8, 11, 0.96) 100%),
+    linear-gradient(90deg, rgba(6, 8, 11, 0.9) 0%, rgba(6, 8, 11, 0.34) 15%, transparent 34%, transparent 66%, rgba(6, 8, 11, 0.34) 85%, rgba(6, 8, 11, 0.9) 100%);
+}
+@media (max-width: 720px){
+  .process-bg{
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1072 / 1536;
+    transform: translateX(-50%);
+  }
+  .process-bg img{ width: 100%; height: 100%; }
+  .process-bg{ opacity: 0.56; }
+  .process-bg::after{
+    background:
+      linear-gradient(180deg, rgba(6, 8, 11, 0.98) 0%, rgba(6, 8, 11, 0.44) 16%, transparent 34%, transparent 66%, rgba(6, 8, 11, 0.5) 84%, rgba(6, 8, 11, 0.98) 100%),
+      linear-gradient(90deg, rgba(6, 8, 11, 0.92) 0%, rgba(6, 8, 11, 0.42) 20%, transparent 48%, rgba(6, 8, 11, 0.3) 80%, rgba(6, 8, 11, 0.88) 100%);
+  }
+}
+
+/* The process is presented as a technical-sheet feature spread, not a generic accordion. */
+.process-section{
+  min-height: 58rem;
+  padding-top: clamp(7rem, 11vw, 10rem);
+  padding-bottom: clamp(6rem, 10vw, 9rem);
+}
+.process-section .section-head{
+  max-width: 36rem;
+  gap: 1.35rem;
+  margin-bottom: clamp(4.5rem, 9vw, 7.5rem);
+}
+.process-section .section-title .line{
+  font-size: clamp(3.4rem, 8.2vw, 7.6rem);
+  letter-spacing: -0.065em;
+}
+.process-section .section-title .line.outline{
+  -webkit-text-stroke-width: 1px;
+}
+.process-spec{
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+.process-section .accordion{
+  width: min(100%, 47rem);
+}
+.process-section .accordion-trigger{
+  min-height: 4.75rem;
+  padding: 1.35rem 0;
+  transition: padding-left 0.24s ease, color 0.24s ease;
+}
+.process-section .accordion-trigger:hover{
+  padding-left: 0.75rem;
+}
+.process-section .accordion-item.open .accordion-trigger{
+  padding-left: 0.75rem;
+}
+.process-section .stage-num{ color: var(--accent); }
+.process-section .stage-name{ font-size: clamp(1.15rem, 2vw, 1.45rem); }
+.process-section .accordion-panel-inner{
+  padding-left: 5.25rem;
+  max-width: 54ch;
+  color: var(--ink);
+}
+@media (min-width: 960px){
+  .process-section .wrap{ padding-left: clamp(8rem, 11vw, 12.5rem); }
+}
+@media (max-width: 720px){
+  .process-section{
+    min-height: auto;
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
+  }
+  .process-section .section-head{ margin-bottom: 3.75rem; }
+  .process-section .section-title .line{ font-size: clamp(3rem, 15vw, 5rem); }
+  .process-spec{ font-size: 0.58rem; letter-spacing: 0.08em; }
+  .process-section .accordion-panel-inner{ padding-left: 0; }
 }
 .section-head{
   display: flex;
@@ -783,7 +896,10 @@ button:focus-visible,
 }
 
 /* ===================== CONTACT ===================== */
-.contact{ border-bottom: none; }
+.contact{
+  border-bottom: none;
+}
+.contact::after{ display: none; }
 .contact-grid{
   display: grid;
   grid-template-columns: 1fr;
