@@ -7,16 +7,16 @@
 
 :root{
   /* --- palette --- */
-  --bg-void:      #0b0b0c;
-  --bg-surface:   #141416;
-  --bg-surface-2: #1a1a1c;
-  --line:         #2a2a2c;
-  --line-soft:    rgba(242,241,237,0.09);
-  --ink:          #f2f1ed;
-  --ink-muted:    #918f89;
-  --ink-dim:      #838079;
-  --accent:       #d35b21;
-  --accent-soft:  rgba(211,91,33,0.16);
+  --bg-void:      #090b0e;
+  --bg-surface:   #101419;
+  --bg-surface-2: #171c22;
+  --line:         #28313a;
+  --line-soft:    rgba(212,224,237,0.10);
+  --ink:          #eef4f8;
+  --ink-muted:    #a3aeb8;
+  --ink-dim:      #73808b;
+  --accent:       #9bc7f3;
+  --accent-soft:  rgba(155,199,243,0.16);
 
   /* --- type --- */
   --font-display: 'Clash Display', 'Arial Narrow', sans-serif;
@@ -343,12 +343,12 @@ button:focus-visible,
   width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(211,91,33,0.25);
+  box-shadow: 0 0 0 3px rgba(155,199,243,0.25);
   animation: rec-pulse 2.4s ease-in-out infinite;
 }
 @keyframes rec-pulse{
-  0%, 100%{ box-shadow: 0 0 0 3px rgba(211,91,33,0.25); }
-  50%{ box-shadow: 0 0 0 6px rgba(211,91,33,0.08); }
+  0%, 100%{ box-shadow: 0 0 0 3px rgba(155,199,243,0.25); }
+  50%{ box-shadow: 0 0 0 6px rgba(155,199,243,0.08); }
 }
 .hero-hud-bottom{
   bottom: clamp(2.2rem, 5vw, 3.5rem);
@@ -487,6 +487,36 @@ button:focus-visible,
   border-bottom: 1px solid var(--line);
 }
 
+/* Technical-sheet motif: the JDM drawing is atmosphere, never a filter on the work. */
+.work-section{
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: linear-gradient(180deg, var(--bg-void) 0%, #0c1015 100%);
+}
+.work-section > .wrap{ position: relative; z-index: 1; }
+.work-blueprint{
+  position: absolute;
+  z-index: 0;
+  width: min(64rem, 74vw);
+  right: max(-15rem, -12vw);
+  top: 2.5rem;
+  opacity: 0.16;
+  pointer-events: none;
+  transform: rotate(-2.5deg);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%, #000 84%, transparent 100%);
+}
+.work-blueprint::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-void) 90%);
+}
+.work-blueprint img{ width:100%; height:auto; filter: contrast(1.12) brightness(1.22); }
+@media (max-width: 720px){
+  .work-blueprint{ width: 48rem; right: -23rem; top: 5.5rem; opacity: .11; }
+}
+
 .process-section{
   position: relative;
   overflow: hidden;
@@ -504,14 +534,15 @@ button:focus-visible,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 85% 30%;
-  opacity: 0.5;
+  object-position: 65% 44%;
+  opacity: 0.38;
+  filter: contrast(1.08) brightness(0.78);
 }
 .process-bg::after{
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, var(--bg-void) 0%, rgba(11,11,12,0.85) 38%, rgba(11,11,12,0.55) 65%, rgba(11,11,12,0.75) 100%);
+  background: linear-gradient(100deg, var(--bg-void) 0%, rgba(9,11,14,0.88) 36%, rgba(9,11,14,0.62) 67%, var(--bg-void) 100%);
 }
 .section-head{
   display: flex;
@@ -561,9 +592,18 @@ button:focus-visible,
   grid-column: span 2;
   aspect-ratio: 4/5;
   padding: 0;
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.4s cubic-bezier(.2,.7,.3,1);
+  transform: translate3d(0, var(--lift, 0px), 0) perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
   will-change: transform;
+  transition: transform 0.28s cubic-bezier(.22,.8,.2,1), box-shadow 0.28s ease, border-color 0.28s ease;
+}
+@media (hover: hover) and (pointer: fine){
+  .g-item.tilt-active{
+    --lift: -5px;
+    z-index: 2;
+    border-color: rgba(242,241,237,0.28);
+    box-shadow: 0 22px 42px rgba(0,0,0,0.42);
+  }
 }
 @media (min-width: 720px){
   .g-item{ grid-column: span 2; }
@@ -585,6 +625,7 @@ button:focus-visible,
 }
 .g-item:hover img{ transform: translateY(var(--py, 0px)) scale(1.11); }
 @media (prefers-reduced-motion: reduce){
+  .g-item{ transform: none !important; transition: none; }
   .g-item img{ transform: none !important; transition: none; }
 }
 .g-caption{

@@ -205,7 +205,11 @@
   if (!reduceMotion && window.matchMedia("(hover: hover)").matches) {
     galleryItems.forEach(function (item) {
       var ticking2 = false, rx = 0, ry = 0;
+      item.addEventListener("mouseenter", function () {
+        item.classList.add("tilt-active");
+      });
       item.addEventListener("mousemove", function (e) {
+        item.classList.add("tilt-active");
         var rect = item.getBoundingClientRect();
         var px = (e.clientX - rect.left) / rect.width - 0.5;
         var py = (e.clientY - rect.top) / rect.height - 0.5;
@@ -221,6 +225,7 @@
         }
       });
       item.addEventListener("mouseleave", function () {
+        item.classList.remove("tilt-active");
         item.style.setProperty("--rx", "0deg");
         item.style.setProperty("--ry", "0deg");
       });
